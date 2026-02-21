@@ -1,0 +1,203 @@
+2026-02-21 17:49:18,092 - src.data.loader - INFO - Loading data from ../data/raw/online_retail.xlsx
+2026-02-21 17:52:45,329 - src.data.loader - INFO - Loading data from ../data/raw/online_retail.xlsx
+2026-02-21 17:53:09,093 - src.data.loader - INFO - Data loaded with shape: (541909, 8)
+2026-02-21 17:53:09,182 - src.data.loader - INFO - Saving processed data to ../data/processed/cleaned_data.csv
+2026-02-21 17:53:39,593 - src.features.build_features - INFO - Building all customer features...
+2026-02-21 17:53:39,594 - src.features.build_features - INFO - Starting RFM calculation...
+2026-02-21 17:53:39,599 - src.features.build_features - INFO - Reference date set to 2011-12-10 12:50:00
+2026-02-21 17:53:39,831 - src.features.build_features - INFO - RFM calculation complete. Segments: {'Others': 1899, 'Champions': 932, 'Loyal': 801, 'At Risk': 444, 'New': 262}
+2026-02-21 17:53:39,863 - src.features.build_features - INFO - Features built for 4338 customers.
+2026-02-21 17:53:39,886 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:53:39,886 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:55:44,024 - src.features.build_features - INFO - Building all customer features...
+2026-02-21 17:55:44,025 - src.features.build_features - INFO - Starting RFM calculation...
+2026-02-21 17:55:44,027 - src.features.build_features - INFO - Reference date set to 2011-12-10 12:50:00
+2026-02-21 17:55:44,208 - src.features.build_features - INFO - RFM calculation complete. Segments: {'Others': 1899, 'Champions': 932, 'Loyal': 801, 'At Risk': 444, 'New': 262}
+2026-02-21 17:55:44,232 - src.features.build_features - INFO - Features built for 4338 customers.
+2026-02-21 17:55:44,259 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:55:44,259 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:55:44,259 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:57:36,693 - src.features.build_features - INFO - Building all customer features...
+2026-02-21 17:57:36,693 - src.features.build_features - INFO - Starting RFM calculation...
+2026-02-21 17:57:36,695 - src.features.build_features - INFO - Reference date set to 2011-12-10 12:50:00
+2026-02-21 17:57:36,860 - src.features.build_features - INFO - RFM calculation complete. Segments: {'Others': 1899, 'Champions': 932, 'Loyal': 801, 'At Risk': 444, 'New': 262}
+2026-02-21 17:57:36,882 - src.features.build_features - INFO - Features built for 4338 customers.
+2026-02-21 17:57:36,903 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:57:36,903 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:57:36,903 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 17:57:36,903 - feature_engineering - INFO - Saved customer_features.csv
+2026-02-21 18:07:42,718 - src.models.churn_model - INFO - Churn label distribution: {0: 2893, 1: 1445}
+2026-02-21 18:07:42,720 - src.models.churn_model - INFO - Training random_forest model...
+2026-02-21 18:07:48,584 - src.models.churn_model - INFO - Best parameters: {'max_depth': 10, 'min_samples_split': 2, 'n_estimators': 100}
+2026-02-21 18:07:48,602 - src.models.churn_model - INFO - Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00       868
+           1       1.00      1.00      1.00       434
+
+    accuracy                           1.00      1302
+   macro avg       1.00      1.00      1.00      1302
+weighted avg       1.00      1.00      1.00      1302
+
+2026-02-21 18:07:48,604 - src.models.churn_model - INFO - ROC-AUC Score: 1.0000
+2026-02-21 18:07:48,611 - src.models.churn_model - INFO - Top 5 features:
+Recency          0.777840
+TenureDays       0.105328
+Frequency        0.056968
+Monetary         0.055314
+AvgOrderValue    0.004549
+dtype: float64
+2026-02-21 18:07:48,634 - src.models.churn_model - INFO - Model saved to ../models/churn_model_rf.pkl
+2026-02-21 18:12:13,144 - src.models.ltv_model - INFO - Calculating historical LTV over entire dataset
+2026-02-21 18:12:13,182 - ltv_analysis - INFO - Historical LTV stats:
+count      4338.000000
+mean       2054.266460
+std        8989.230441
+min           3.750000
+25%         307.415000
+50%         674.485000
+75%        1661.740000
+max      280206.020000
+Name: HistoricalLTV, dtype: float64
+2026-02-21 18:12:13,188 - ltv_analysis - INFO - Cutoff date for training: 2011-06-09 12:50:00
+2026-02-21 18:12:13,205 - src.features.build_features - INFO - Building all customer features...
+2026-02-21 18:12:13,206 - src.features.build_features - INFO - Starting RFM calculation...
+2026-02-21 18:12:13,208 - src.features.build_features - INFO - Reference date set to 2011-06-10 12:40:00
+2026-02-21 18:12:13,305 - src.features.build_features - INFO - RFM calculation complete. Segments: {'Others': 1194, 'Champions': 567, 'Loyal': 517, 'At Risk': 341, 'New': 174}
+2026-02-21 18:12:13,319 - src.features.build_features - INFO - Features built for 2793 customers.
+2026-02-21 18:16:38,989 - src.models.ltv_model - INFO - Calculating historical LTV over entire dataset
+2026-02-21 18:16:39,002 - ltv_analysis - INFO - Historical LTV stats:
+count      4338.000000
+mean       2054.266460
+std        8989.230441
+min           3.750000
+25%         307.415000
+50%         674.485000
+75%        1661.740000
+max      280206.020000
+Name: HistoricalLTV, dtype: float64
+2026-02-21 18:16:39,002 - ltv_analysis - INFO - Historical LTV stats:
+count      4338.000000
+mean       2054.266460
+std        8989.230441
+min           3.750000
+25%         307.415000
+50%         674.485000
+75%        1661.740000
+max      280206.020000
+Name: HistoricalLTV, dtype: float64
+2026-02-21 18:16:39,006 - ltv_analysis - INFO - Cutoff date for training: 2011-06-09 12:50:00
+2026-02-21 18:16:39,006 - ltv_analysis - INFO - Cutoff date for training: 2011-06-09 12:50:00
+2026-02-21 18:16:39,032 - src.features.build_features - INFO - Building all customer features...
+2026-02-21 18:16:39,033 - src.features.build_features - INFO - Starting RFM calculation...
+2026-02-21 18:16:39,034 - src.features.build_features - INFO - Reference date set to 2011-06-10 12:40:00
+2026-02-21 18:16:39,139 - src.features.build_features - INFO - RFM calculation complete. Segments: {'Others': 1194, 'Champions': 567, 'Loyal': 517, 'At Risk': 341, 'New': 174}
+2026-02-21 18:16:39,154 - src.features.build_features - INFO - Features built for 2793 customers.
+2026-02-21 18:16:40,055 - src.models.ltv_model - INFO - Model: random_forest
+2026-02-21 18:16:40,056 - src.models.ltv_model - INFO - MAE: 1059.94, RMSE: 4397.13, R2: -0.6547
+2026-02-21 18:16:40,075 - src.models.ltv_model - INFO - LTV model saved to ../models/ltv_model_rf.pkl
+2026-02-21 18:16:40,307 - ltv_analysis - INFO - Saved customer_features_with_ltv.csv
+2026-02-21 18:16:40,307 - ltv_analysis - INFO - Saved customer_features_with_ltv.csv
+2026-02-21 18:20:06,356 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:23:03,291 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:23:13,516 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:25:17,558 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:27:32,107 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:31:25,225 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:31:25,262 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:31:25,262 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:31:25,287 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:34:51,347 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:34:51,388 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:34:51,388 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:34:51,416 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:37:14,216 - src.models.churn_model - INFO - Model loaded from ../models/churn_model_rf.pkl
+2026-02-21 18:37:14,261 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:37:14,261 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:37:14,261 - src.business.offer_recommender - INFO - Offer distribution:
+RecommendedOffer
+We miss you! 15% off your next order                             1104
+Referral bonus: give $10, get $10                                 801
+Standard monthly newsletter with personalized recommendations     651
+Loyalty points multiplier (2x for next month)                     588
+High-value at-risk: 25% off next purchase + free shipping         364
+VIP exclusive event invitation + early access to new products     344
+Welcome series: 10% off second purchase                           262
+Flash sale preview (24h early access)                             144
+Re-engagement email with 20% off                                   80
+Name: count, dtype: int64
+2026-02-21 18:37:14,297 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:37:14,297 - offer_recommendations - INFO - Saved customers_with_offers.csv
+2026-02-21 18:37:14,307 - offer_recommendations - INFO - Saved campaign summary to reports/
+2026-02-21 18:37:14,307 - offer_recommendations - INFO - Saved campaign summary to reports/
