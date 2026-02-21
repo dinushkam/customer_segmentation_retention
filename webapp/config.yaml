@@ -1,0 +1,8 @@
+dashboard:
+  title: "Customer 360 Analytics"
+  logo: "assets/logo.png"
+  theme:
+    primary_color: "#1E3A8A"
+    secondary_color: "#3B82F6"
+filters:
+  default_segments: ["Champions", "Loyal"]
