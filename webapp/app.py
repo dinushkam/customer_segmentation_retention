@@ -19,6 +19,8 @@ with open(Path(__file__).parent / 'config.yaml') as f:
 with open(Path(__file__).parent / 'assets' / 'style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+
+
 # ======================
 # MAIN HEADER (Decent & Bold)
 # ======================
@@ -38,11 +40,16 @@ if df.empty:
 # ======================
 # SIDEBAR WITH DECENT HEADING
 # ======================
+
 with st.sidebar:
     # Logo or title
-    if Path(config['dashboard']['logo']).exists():
-        st.image(config['dashboard']['logo'], width=200)
+    assets_dir = Path(__file__).parent / 'assets'
+    logo_path = assets_dir / 'logo.jpg'
+
+    if logo_path.exists():
+        st.image(str(logo_path), width=200)
     else:
+        st.warning("Logo not found. Using placeholder.")
         st.image("https://via.placeholder.com/200x80?text=Your+Logo", width=200)
 
     st.markdown("---")
@@ -71,7 +78,7 @@ with st.sidebar:
         apply_filters = st.form_submit_button("Apply Filters", type="primary")
 
     st.markdown("---")
-    st.markdown("**Built with ❤️ using Data Science**")
+
 
 # Apply filters
 filtered_df = df[
@@ -177,6 +184,6 @@ with tab3:
 st.markdown("""
 <div class="footer">
     <hr>
-    <p>© 2025 Customer 360 Analytics. All rights reserved.</p>
+    <p>© 2026 Customer 360 Analytics. All rights reserved.</p>
 </div>
 """, unsafe_allow_html=True)
