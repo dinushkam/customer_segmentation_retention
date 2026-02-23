@@ -11,4 +11,5 @@ imbalanced-learn  # optional for handling imbalance
 lifetimes
 streamlit~=1.54.0
 plotly~=6.5.2
+pyyaml
 

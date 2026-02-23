@@ -1,0 +1,83 @@
+.metric-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+.metric-card h3 {
+    font-size: 1rem;
+    color: #6A1B9A;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+.metric-card .value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #1E1E2F;
+    line-height: 1.2;
+}
+.metric-card .delta {
+    font-size: 0.9rem;
+    color: #4CAF50;
+    margin-top: 5px;
+}
+.metric-card .delta.negative {
+    color: #f44336;
+}
+.metric-card small {
+    color: #6c757d;
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+.header h1 {
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+.header hr {
+    border: 1px solid #6A1B9A;
+    margin-top: 0.5rem;
+}
+
+.footer {
+    margin-top: 3rem;
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.stButton button {
+    background-color: #6A1B9A;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+.stButton button:hover {
+    background-color: #4a0072;
+    color: white;
+    box-shadow: 0 4px 8px rgba(106,27,154,0.3);
+}
+
+@media (max-width: 768px) {
+    .metric-card .value {
+        font-size: 1.5rem;
+    }
+    .header h1 {
+        font-size: 1.8rem;
+    }
+}

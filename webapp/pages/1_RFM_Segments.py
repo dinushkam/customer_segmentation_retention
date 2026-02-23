@@ -3,38 +3,60 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 import streamlit as st
+import pandas as pd
 import plotly.express as px
+import plotly.io as pio
 from utils import load_customer_data
 
 st.set_page_config(page_title="RFM Segments", layout="wide")
 
-st.title("📊 RFM Analysis")
-st.markdown("Explore customer segments based on Recency, Frequency, and Monetary scores.")
+# Load custom CSS
+with open(Path(__file__).parent.parent / 'assets' / 'style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="header">
+    <h1>Customer 360 Analytics <span style="color:#6A1B9A;">| RFM Segments</span></h1>
+    <hr>
+</div>
+""", unsafe_allow_html=True)
 
 df = load_customer_data()
+if df.empty:
+    st.stop()
 
 # Sidebar filters
-st.sidebar.header("RFM Filters")
-selected_rfm_scores = st.sidebar.multiselect(
-    "RFM Score (3-digit)",
-    options=df['RFM_Score'].unique(),
-    default=[]
-)
+with st.sidebar:
+    st.markdown("## 🎯 RFM Filters")
+    selected_scores = st.multiselect(
+        "RFM Score (3-digit)",
+        options=df['RFM_Score'].unique(),
+        default=[]
+    )
 
-filtered_df = df if not selected_rfm_scores else df[df['RFM_Score'].isin(selected_rfm_scores)]
+filtered_df = df if not selected_scores else df[df['RFM_Score'].isin(selected_scores)]
 
-# Distribution of RFM scores
-st.subheader("RFM Score Distribution")
-fig_rfm_hist = px.histogram(filtered_df, x='RFM_Score', color='Segment', title='RFM Scores by Segment')
-st.plotly_chart(fig_rfm_hist, use_container_width=True)
+# Main content
+col1, col2 = st.columns([2, 1])
 
-# Segment profiles
-st.subheader("Segment Profiles")
-profiles = filtered_df.groupby('Segment')[['Recency','Frequency','Monetary']].mean().round(1)
-st.dataframe(profiles)
+with col1:
+    fig_hist = px.histogram(
+        filtered_df,
+        x='RFM_Score',
+        color='Segment',
+        title='RFM Score Distribution',
+        color_discrete_sequence=px.colors.qualitative.Pastel,
+        barmode='group'
+    )
+    fig_hist.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+    st.plotly_chart(fig_hist, use_container_width=True)
 
-# 3D scatter of R,F,M
-st.subheader("3D View of RFM")
+with col2:
+    st.subheader("Segment Profiles")
+    profiles = filtered_df.groupby('Segment')[['Recency', 'Frequency', 'Monetary']].mean().round(1)
+    st.dataframe(profiles.style.background_gradient(cmap='Purples'), use_container_width=True)
+
+st.subheader("3D View of RFM Space")
 fig_3d = px.scatter_3d(
     filtered_df,
     x='Recency',
@@ -42,6 +64,16 @@ fig_3d = px.scatter_3d(
     z='Monetary',
     color='Segment',
     hover_data=['CustomerID'],
+    color_discrete_sequence=px.colors.qualitative.Pastel,
     title='RFM Space'
 )
+fig_3d.update_layout(scene=dict(xaxis_title='Recency', yaxis_title='Frequency', zaxis_title='Monetary'))
 st.plotly_chart(fig_3d, use_container_width=True)
+
+# Footer
+st.markdown("""
+<div class="footer">
+    <hr>
+    <p>© 2025 Customer 360 Analytics. All rights reserved.</p>
+</div>
+""", unsafe_allow_html=True)
