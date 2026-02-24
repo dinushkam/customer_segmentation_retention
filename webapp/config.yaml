@@ -2,6 +2,6 @@ dashboard:
   title: "Customer 360 Analytics"
   logo: "assets/logo.jpg"  # replace with your logo path
   theme:
-    primary_color: "#6A1B9A"
-    secondary_color: "#FF6F61"
-    accent_color: "#4CAF50"
+    primary_color: "#00E5FF"    # cyan
+    secondary_color: "#FF3D81"  # pink
+    accent_color: "#7C4DFF"     # violet

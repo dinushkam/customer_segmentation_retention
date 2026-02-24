@@ -1,83 +1,331 @@
-.metric-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    text-align: center;
-    transition: transform 0.2s;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-.metric-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-.metric-card h3 {
-    font-size: 1rem;
-    color: #6A1B9A;
-    margin-bottom: 10px;
-    font-weight: 500;
-}
-.metric-card .value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #1E1E2F;
-    line-height: 1.2;
-}
-.metric-card .delta {
-    font-size: 0.9rem;
-    color: #4CAF50;
-    margin-top: 5px;
-}
-.metric-card .delta.negative {
-    color: #f44336;
-}
-.metric-card small {
-    color: #6c757d;
-    font-size: 0.8rem;
-    margin-top: 5px;
+/* =========================
+   Customer 360 Dark Glass UI
+   Inspired by the provided dashboard mock (navy + neon)
+   ========================= */
+
+/* ---------- Theme tokens ---------- */
+
+/* remove top spacing in sidebar */
+[data-testid="stSidebar"] > div:first-child{
+    padding-top: 0rem !important;
 }
 
-.header {
-    margin-bottom: 2rem;
-}
-.header h1 {
-    font-size: 2.2rem;
-    font-weight: 600;
-}
-.header hr {
-    border: 1px solid #6A1B9A;
-    margin-top: 0.5rem;
+/* logo container styling */
+.sidebar-logo{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding: 1rem 0 1.2rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 1rem;
 }
 
-.footer {
-    margin-top: 3rem;
-    text-align: center;
-    color: #6c757d;
-    font-size: 0.9rem;
+:root{
+  --bg-0: #070B1F;
+  --bg-1: #0B1230;
+  --bg-2: #0E1A3D;
+
+  --panel: rgba(18, 28, 70, 0.55);
+  --panel-2: rgba(18, 28, 70, 0.40);
+  --stroke: rgba(255, 255, 255, 0.10);
+  --stroke-2: rgba(255, 255, 255, 0.06);
+
+  --text: #E8EEFF;
+  --muted: rgba(232, 238, 255, 0.72);
+
+  --primary: #00E5FF;      /* cyan */
+  --primary-2: #7C4DFF;    /* violet */
+  --danger: #FF3D81;       /* pink */
+  --good: #00E676;         /* green */
+  --warn: #FFD54F;         /* amber */
+
+  --shadow: 0 14px 40px rgba(0,0,0,0.45);
+  --shadow-soft: 0 10px 26px rgba(0,0,0,0.35);
+
+  --radius-xl: 22px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+
+  --blur: blur(18px);
 }
 
-.stButton button {
-    background-color: #6A1B9A;
-    color: white;
-    border-radius: 8px;
-    border: none;
-    padding: 0.5rem 1rem;
-    transition: all 0.3s ease;
-}
-.stButton button:hover {
-    background-color: #4a0072;
-    color: white;
-    box-shadow: 0 4px 8px rgba(106,27,154,0.3);
+/* ---------- App background ---------- */
+.stApp{
+  background:
+    radial-gradient(1200px 800px at 10% 10%, rgba(124,77,255,0.16), transparent 60%),
+    radial-gradient(900px 700px at 92% 18%, rgba(0,229,255,0.14), transparent 55%),
+    radial-gradient(800px 650px at 78% 84%, rgba(255,61,129,0.10), transparent 55%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0));
+  color: var(--text);
 }
 
-@media (max-width: 768px) {
-    .metric-card .value {
-        font-size: 1.5rem;
-    }
-    .header h1 {
-        font-size: 1.8rem;
-    }
+/* subtle stars / noise */
+.stApp:before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 1px, transparent 1px),
+    radial-gradient(circle at 70% 40%, rgba(255,255,255,0.08) 1px, transparent 1px),
+    radial-gradient(circle at 40% 80%, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 280px 240px, 360px 300px, 420px 360px;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+}
+
+/* tighter layout */
+section.main > div{
+  padding-top: 1.25rem;
+  padding-bottom: 2rem;
+}
+
+/* ---------- Typography ---------- */
+html, body, [class*="css"]{
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+h1, h2, h3, h4{
+  color: var(--text);
+  letter-spacing: 0.2px;
+}
+
+p, li, span, label{
+  color: var(--muted);
+}
+
+/* ---------- Header block (your HTML uses .header) ---------- */
+.header{
+  background: linear-gradient(135deg, rgba(0,229,255,0.08), rgba(124,77,255,0.06));
+  border: 1px solid var(--stroke-2);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem 1.25rem 1rem 1.25rem;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--blur);
+}
+
+.header hr{
+  border: none;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0,229,255,0.8), rgba(255,61,129,0.6), rgba(124,77,255,0.7));
+  opacity: 0.55;
+}
+
+.header h1{
+  margin: 0 0 0.25rem 0;
+  font-weight: 800;
+}
+
+.header h3{
+  margin: 0.15rem 0 0 0;
+  font-weight: 500;
+  color: rgba(232, 238, 255, 0.70);
+}
+
+/* ---------- Sidebar ---------- */
+[data-testid="stSidebar"]{
+  background:
+    radial-gradient(700px 420px at 30% 12%, rgba(0,229,255,0.14), transparent 55%),
+    radial-gradient(680px 420px at 30% 70%, rgba(124,77,255,0.14), transparent 55%),
+    linear-gradient(180deg, rgba(6,10,28,0.92), rgba(7,11,31,0.92));
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+[data-testid="stSidebar"] .stMarkdown,
+[data-testid="stSidebar"] label,
+[data-testid="stSidebar"] p{
+  color: rgba(232,238,255,0.78) !important;
+}
+
+[data-testid="stSidebar"] .stImage{
+  padding-top: 0.25rem;
+}
+
+/* Sidebar section separators */
+[data-testid="stSidebar"] hr{
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 0.75rem 0;
+}
+
+/* ---------- Panels / containers ---------- */
+.st-emotion-cache-1r6slb0,
+.st-emotion-cache-1y4p8pa{
+  background: transparent;
+}
+
+/* Expander styling */
+details{
+  border: 1px solid var(--stroke-2) !important;
+  border-radius: var(--radius-lg) !important;
+  background: var(--panel-2) !important;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--blur);
+}
+
+details summary{
+  color: var(--text) !important;
+  padding: 0.65rem 0.85rem !important;
+}
+
+details summary:hover{
+  background: rgba(0,229,255,0.06) !important;
+  border-radius: var(--radius-lg);
+}
+
+/* ---------- Inputs ---------- */
+[data-testid="stSelectbox"] > div,
+[data-testid="stMultiSelect"] > div,
+[data-testid="stTextInput"] > div,
+[data-testid="stNumberInput"] > div,
+[data-testid="stDateInput"] > div{
+  background: rgba(10, 16, 44, 0.55) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 14px !important;
+  backdrop-filter: var(--blur);
+}
+
+[data-testid="stSlider"]{
+  padding: 0.15rem 0.35rem 0.25rem 0.35rem;
+  border-radius: 14px;
+  background: rgba(10, 16, 44, 0.35);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* ---------- Buttons ---------- */
+.stButton > button,
+.stDownloadButton > button{
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  background: linear-gradient(90deg, rgba(0,229,255,0.25), rgba(124,77,255,0.20)) !important;
+  color: var(--text) !important;
+  padding: 0.55rem 1.05rem !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border 0.12s ease;
+}
+
+.stButton > button:hover,
+.stDownloadButton > button:hover{
+  transform: translateY(-1px);
+  border-color: rgba(0,229,255,0.45) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.45);
+}
+
+button[kind="primary"]{
+  background: linear-gradient(90deg, rgba(0,229,255,0.80), rgba(255,61,129,0.70)) !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  color: #061026 !important;
+  font-weight: 800 !important;
+}
+
+/* ---------- Tabs ---------- */
+button[role="tab"]{
+  border-radius: 999px !important;
+  padding: 0.45rem 0.9rem !important;
+  border: 1px solid rgba(255,255,255,0.10) !important;
+  background: rgba(10, 16, 44, 0.40) !important;
+  color: rgba(232,238,255,0.80) !important;
+}
+
+button[role="tab"][aria-selected="true"]{
+  background: linear-gradient(90deg, rgba(0,229,255,0.22), rgba(124,77,255,0.18)) !important;
+  border-color: rgba(0,229,255,0.35) !important;
+  color: var(--text) !important;
+}
+
+/* ---------- Metric cards (used by utils.metric_card) ---------- */
+
+.metric-card{
+  background: linear-gradient(135deg, rgba(18,28,70,0.62), rgba(10,16,44,0.38));
+  border-radius: var(--radius-xl);
+  padding: 1.05rem 1.1rem;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: var(--shadow);
+  backdrop-filter: var(--blur);
+  text-align: left;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.metric-card:before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    radial-gradient(420px 160px at 20% 20%, rgba(0,229,255,0.18), transparent 60%),
+    radial-gradient(380px 180px at 78% 40%, rgba(255,61,129,0.14), transparent 55%),
+    radial-gradient(360px 180px at 70% 90%, rgba(124,77,255,0.14), transparent 55%);
+  opacity: 0.85;
+  pointer-events:none;
+}
+
+.metric-card > *{
+  position: relative;
+  z-index: 1;
+}
+
+.metric-card h3{
+  font-size: 0.95rem;
+  color: rgba(232,238,255,0.78);
+  margin: 0 0 0.4rem 0;
+  font-weight: 600;
+}
+
+.metric-card .value{
+  font-size: 2.05rem;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1.1;
+  letter-spacing: 0.2px;
+}
+
+.metric-card .delta{
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+  color: rgba(232,238,255,0.75);
+}
+
+.metric-card .help{
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: rgba(232,238,255,0.55);
+}
+
+/* ---------- Dataframe / table look ---------- */
+[data-testid="stDataFrame"]{
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(10, 16, 44, 0.35);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--blur);
+  padding: 0.25rem;
+}
+
+/* ---------- Alerts ---------- */
+div[data-testid="stAlert"]{
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(10, 16, 44, 0.55);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: var(--blur);
+  color: var(--text);
+}
+
+/* ---------- Footer ---------- */
+.footer{
+  margin-top: 1.5rem;
+  opacity: 0.8;
+}
+.footer hr{
+  border: none;
+  height: 1px;
+  background: rgba(255,255,255,0.10);
+}
+.footer p{
+  color: rgba(232,238,255,0.55);
 }
