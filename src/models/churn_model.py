@@ -1,153 +1,51 @@
 import pandas as pd
-import numpy as np
 from datetime import timedelta
-import logging
-import joblib
-from sklearn.model_selection import train_test_split, GridSearchCV, TimeSeriesSplit
+from sklearn.model_selection import TimeSeriesSplit
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
-from sklearn.preprocessing import StandardScaler
-import xgboost as xgb
-from src.utils.logger import setup_logger
+from src.features.build_features import build_all_features
+import logging
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
-def define_churn_labels(df_transactions,
-                        customer_features,
-                        customer_id='CustomerID',
-                        date_col='InvoiceDate',
-                        churn_window_days=90,
-                        reference_date=None):
+def prepare_split_data(df: pd.DataFrame, churn_window_days: int = 90):
     """
-    Define churn labels for each customer based on whether they made a purchase
-    in the last 'churn_window_days' relative to reference_date.
-
-    Parameters:
-    -----------
-    df_transactions : pd.DataFrame
-        Transaction data with at least customer_id and date_col.
-    customer_features : pd.DataFrame
-        DataFrame with customer_id as index (from feature engineering).
-    churn_window_days : int
-        Number of days without purchase to be considered churned.
-    reference_date : datetime, optional
-        The date to use as 'today'. If None, uses max date in transactions.
-
-    Returns:
-    --------
-    pd.Series with churn labels (1 = churned, 0 = active) aligned with customer_features index.
+    Prevents Data Leakage by using a Time-Slicing approach.
+    Data is split into:
+    1. Feature Window: Everything before (MaxDate - churn_window_days)
+    2. Label Window: The final churn_window_days to determine if they stayed.
     """
-    if reference_date is None:
-        reference_date = df_transactions[date_col].max()
+    max_date = df['InvoiceDate'].max()
+    cutoff_date = max_date - timedelta(days=churn_window_days)
 
-    # Get last purchase date per customer
-    last_purchase = df_transactions.groupby(customer_id)[date_col].max()
+    # Data used to create features (History)
+    feature_data = df[df['InvoiceDate'] < cutoff_date]
+    # Data used to check for 'future' activity (Labels)
+    label_data = df[df['InvoiceDate'] >= cutoff_date]
 
-    # Compute days since last purchase
-    days_since_last = (reference_date - last_purchase).dt.days
+    # 1. Build features ONLY from history
+    X = build_all_features(feature_data, reference_date=cutoff_date)
 
-    # Align with customer_features index
-    days_since_last = days_since_last.reindex(customer_features.index,
-                                              fill_value=churn_window_days + 1)  # if missing, assume churned
-
-    # Churn = 1 if days_since_last > churn_window_days else 0
-    churn = (days_since_last > churn_window_days).astype(int)
-
-    logger.info(f"Churn label distribution: {churn.value_counts().to_dict()}")
-    return churn
-
-
-def prepare_features_and_labels(customer_features, churn_labels, feature_cols=None):
-    """
-    Prepare feature matrix X and target vector y.
-    """
-    if feature_cols is None:
-        # Select numeric columns (excluding scores that might be categorical)
-        feature_cols = ['Recency', 'Frequency', 'Monetary', 'TenureDays', 'AvgOrderValue']
-
-    X = customer_features[feature_cols].copy()
-    y = churn_labels.copy()
-
-    # Handle missing values (should be none if feature engineering is clean)
-    if X.isnull().any().any():
-        logger.warning("Missing values found in features. Filling with median.")
-        X.fillna(X.median(), inplace=True)
+    # 2. Define Labels: 1 if customer did NOT appear in label_data, else 0
+    active_customers = label_data['CustomerID'].unique()
+    y = X.index.map(lambda x: 0 if x in active_customers else 1)
 
     return X, y
 
 
-def train_churn_model(X, y, model_type='random_forest', tune_hyperparams=False):
-    """
-    Train a churn prediction model with optional hyperparameter tuning.
+def train_churn_model_robust(X, y):
+    """Trains model using TimeSeriesSplit to ensure temporal validity."""
+    # Use selected numeric features
+    feature_cols = ['Recency', 'Frequency', 'Monetary', 'TenureDays', 'AvgOrderValue', 'StdDaysBetweenOrders']
+    X_train = X[feature_cols].fillna(0)
 
-    model_type: 'random_forest' or 'xgboost'
-    """
-    logger.info(f"Training {model_type} model...")
+    # TimeSeriesSplit is better for transaction data than random split
+    tscv = TimeSeriesSplit(n_splits=5)
+    model = RandomForestClassifier(n_estimators=200, class_weight='balanced', random_state=42)
 
-    # Train/test split (temporal split recommended for time-series, but we'll use random for simplicity)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=42, stratify=y
-    )
+    for train_index, test_index in tscv.split(X_train):
+        X_t, X_v = X_train.iloc[train_index], X_train.iloc[test_index]
+        y_t, y_v = y[train_index], y[test_index]
+        model.fit(X_t, y_t)
 
-    if model_type == 'random_forest':
-        model = RandomForestClassifier(random_state=42, class_weight='balanced')
-        if tune_hyperparams:
-            param_grid = {
-                'n_estimators': [100, 200],
-                'max_depth': [10, 20, None],
-                'min_samples_split': [2, 5]
-            }
-            grid = GridSearchCV(model, param_grid, cv=5, scoring='roc_auc', n_jobs=-1)
-            grid.fit(X_train, y_train)
-            model = grid.best_estimator_
-            logger.info(f"Best parameters: {grid.best_params_}")
-        else:
-            model.fit(X_train, y_train)
-    elif model_type == 'xgboost':
-        model = xgb.XGBClassifier(random_state=42, scale_pos_weight=(len(y) - sum(y)) / sum(y))  # handle imbalance
-        if tune_hyperparams:
-            param_grid = {
-                'n_estimators': [100, 200],
-                'max_depth': [3, 6, 10],
-                'learning_rate': [0.01, 0.1]
-            }
-            grid = GridSearchCV(model, param_grid, cv=5, scoring='roc_auc', n_jobs=-1)
-            grid.fit(X_train, y_train)
-            model = grid.best_estimator_
-            logger.info(f"Best parameters: {grid.best_params_}")
-        else:
-            model.fit(X_train, y_train)
-    else:
-        raise ValueError("model_type must be 'random_forest' or 'xgboost'")
-
-    # Evaluate
-    y_pred = model.predict(X_test)
-    y_proba = model.predict_proba(X_test)[:, 1]
-
-    logger.info(f"Classification Report:\n{classification_report(y_test, y_pred)}")
-    logger.info(f"ROC-AUC Score: {roc_auc_score(y_test, y_proba):.4f}")
-
-    # Feature importance
-    if model_type == 'random_forest':
-        importances = model.feature_importances_
-    else:  # xgboost
-        importances = model.feature_importances_
-
-    feat_imp = pd.Series(importances, index=X.columns).sort_values(ascending=False)
-    logger.info(f"Top 5 features:\n{feat_imp.head(5)}")
-
-    return model, X_train, X_test, y_train, y_test
-
-
-def save_model(model, filepath='models/churn_model.pkl'):
-    """Save trained model to disk."""
-    joblib.dump(model, filepath)
-    logger.info(f"Model saved to {filepath}")
-
-
-def load_model(filepath='models/churn_model.pkl'):
-    """Load trained model from disk."""
-    model = joblib.load(filepath)
-    logger.info(f"Model loaded from {filepath}")
     return model

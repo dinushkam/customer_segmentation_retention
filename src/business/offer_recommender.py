@@ -33,66 +33,31 @@ def load_all_customer_data(customer_features_path,
     return customers
 
 
-def generate_offer_recommendations(customers_df,
-                                   churn_prob_col='ChurnProb',
-                                   ltv_col='PredictedLTV_Next6Months',
-                                   segment_col='Segment'):
-    """
-    Generate targeted offer recommendations based on segment, churn risk, and LTV.
-    """
-    # Precompute global thresholds
-    high_ltv_threshold = customers_df['HistoricalLTV'].quantile(0.9)
-    median_ltv = customers_df['HistoricalLTV'].median()
+def generate_offer_recommendations(customers_df):
+    """Logic based on risk (ChurnProb) and Value (LTV)."""
 
     def offer_logic(row):
-        segment = row[segment_col]
-        churn_prob = row.get(churn_prob_col, 0)
-        predicted_ltv = row.get(ltv_col, 0)  # future LTV
-        historical_ltv = row['HistoricalLTV']  # past total spend
+        # High value/Low risk
+        if row['Segment'] == 'Champions' and row['ChurnProb'] < 0.3:
+            return "VIP exclusive event invitation"
 
-        # Champions: highest value, keep them happy
-        if segment == 'Champions':
-            if historical_ltv > high_ltv_threshold:
-                return "VIP exclusive event invitation + early access to new products"
-            else:
-                return "Loyalty points multiplier (2x for next month)"
+        # High value/High risk (The most critical group)
+        if row['HistoricalLTV'] > customers_df['HistoricalLTV'].median() and row['ChurnProb'] > 0.7:
+            return "High-value win-back: 25% discount + Free Shipping"
 
-        # Loyal customers: reinforce loyalty
-        elif segment == 'Loyal':
-            if churn_prob > 0.5:
-                return "Personalized 'we miss you' discount (15% off)"
-            else:
-                return "Referral bonus: give $10, get $10"
-
-        # At Risk: win them back
-        elif segment == 'At Risk':
-            if historical_ltv > median_ltv:
-                return "High-value at-risk: 25% off next purchase + free shipping"
-            else:
-                return "Re-engagement email with 20% off"
-
-        # New customers: encourage repeat purchase
-        elif segment == 'New':
+        # Low Frequency/New
+        if row['Segment'] == 'New':
             return "Welcome series: 10% off second purchase"
 
-        # Others (bulk of customers)
-        else:
-            if churn_prob > 0.7:
-                return "We miss you! 15% off your next order"
-            elif historical_ltv > median_ltv:
-                return "Flash sale preview (24h early access)"
-            else:
-                return "Standard monthly newsletter with personalized recommendations"
+        # General Retention
+        if row['ChurnProb'] > 0.5:
+            return "Personalized 'we miss you' 15% discount"
+
+        return "Standard monthly newsletter"
 
     customers = customers_df.copy()
     customers['RecommendedOffer'] = customers.apply(offer_logic, axis=1)
-
-    # Count offers for reporting
-    offer_counts = customers['RecommendedOffer'].value_counts()
-    logger.info(f"Offer distribution:\n{offer_counts}")
-
     return customers
-
 
 def create_marketing_campaign_summary(customers_with_offers):
     """
